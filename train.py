@@ -1,4 +1,10 @@
 from tensorflow import keras
+import json
+from pathlib import Path
+from data_processing import build_datasets, IMG_SIZE, BATCH_SIZE
+from model import build_model
+import matplotlib.pyplot as plt
+
 
 # epochs e a quantidade de vezes o modelo recebe o dataset de treino. neste caso 5
 #primeira faze de treino. Só a "cabeça" nova que vamos criar mais a frente, com o backbone congelado.
@@ -6,7 +12,10 @@ EPOCHS_HEAD = 5
 #treinamos o backbone que veio do modelo + a cabeça nova, so para o afinar para a nova tarefa
 EPOCHS_FINE = 10
 
-model, base_model = build_model(num_classes=101, img_size=IMG_SIZE)
+#importar os dados
+train_ds, val_ds, num_classes, label_names = build_datasets()
+
+model, base_model = build_model(num_classes=num_classes, img_size=IMG_SIZE)
 
 #aqui vamos compilar o modelo. 
 #O otimizador é o algoritmo que atualiza os pesos para minimizar a loss.
@@ -47,9 +56,58 @@ model.compile(
     metrics=["accuracy"],
 )
 
-#aqui treinamos a cabeca com o backbone :) 10 epochs
-model.fit(
+#aqui treinamos a cabeca com o backbone :) 10 epochs. guardamos numa var para depois podermos ver os dados de treino em graficos mais abaixo
+history_fine = model.fit(
     train_ds,
     epochs=EPOCHS_FINE,
     validation_data=val_ds,
 )
+
+
+# Avaliar no conjunto de validação
+final_loss, final_acc = model.evaluate(val_ds)
+final_acc_pct = final_acc * 100.0
+
+summary = {
+    "final_val_loss": float(final_loss),
+    "final_val_accuracy": float(final_acc),
+    "final_val_accuracy_pct": float(final_acc_pct),
+}
+
+Path("artifacts").mkdir(exist_ok=True)
+with open("artifacts/training_summary.json", "w") as f:
+    json.dump(summary, f, indent=2)
+
+print(f"Accuracy final na validação: {final_acc_pct:.2f}%")
+
+
+
+#Graficos com 
+loss = history_fine.history["loss"]
+val_loss = history_fine.history["val_loss"]
+acc = history_fine.history["accuracy"]
+val_acc = history_fine.history["val_accuracy"]
+
+epochs = range(1, len(loss) + 1)
+
+# Plot de loss
+plt.figure(figsize=(8, 4))
+plt.plot(epochs, loss, label="Train loss")
+plt.plot(epochs, val_loss, label="Val loss")
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.legend()
+plt.tight_layout()
+plt.savefig("artifacts/loss_curve_fine.png")
+plt.close()
+
+# Plot de accuracy
+plt.figure(figsize=(8, 4))
+plt.plot(epochs, acc, label="Train accuracy")
+plt.plot(epochs, val_acc, label="Val accuracy")
+plt.xlabel("Epoch")
+plt.ylabel("Accuracy")
+plt.legend()
+plt.tight_layout()
+plt.savefig("artifacts/accuracy_curve_fine.png")
+plt.close()
