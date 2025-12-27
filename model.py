@@ -13,3 +13,26 @@ base_model = EfficientNetB0(
     weights="imagenet",
     input_shape=(img_size, img_size, 3),
 )
+
+#congelamos o backbone para a primeira fase de treino
+base_model.trainable = False
+
+# aqui criamos a nova cabeça do modelo
+
+# inputs é o tensor da imagem com o tamanho (224, 224, 3).
+# O backbone (EfficientNet-B0 sem a cabeça original) passa a imagem por várias camadas Conv2D, pooling, etc.
+# Ou seja, o backbone devolve um tensor de "features", reduzindo a altura e a largura e aumentando o número de canais/features.
+# Por exemplo, algo como (7, 7, 1280): 7x7 de "mapa" para cada um dos 1280 canais.
+# Cada um desses canais é um "detetor" diferente de padrões (bordas, texturas, formas específicas, etc.).
+
+x = base_model(inputs, training=False)
+
+# O GlobalAveragePooling2D pega em cada canal (cada um dos 1280 mapas 7×7) e faz a média de todos os píxeis desse mapa.
+# Ficamos com 1 número por canal, ou seja, o tensor passa de (7, 7, 1280) para (1280,).
+x = layers.GlobalAveragePooling2D()(x)
+
+# apagar 30% das features no treino para evitar overfitting.
+x = layers.Dropout(0.3)(x)
+
+# converter o vetor (1280,) em probabilidades para cada classe
+outputs = layers.Dense(num_classes, activation="softmax")(x)
