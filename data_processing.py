@@ -56,9 +56,11 @@ def augment(image, label):
     return image, label
 
 
-#aqui aplicamos as funcoes que criamos atras no dataset :)
+#aqui aplicamos as funcoes que criamos atras no dataset e dividimos em treino e validação :) 
+# o um_parallel_calls=tf.data.AUTOTUNE deixa o TensorFlow decidir quantos workers usar para paralelizar este map, aproveitando CPU
 train_ds = ds_train.map(preprocess, num_parallel_calls=tf.data.AUTOTUNE)
 train_ds = train_ds.map(augment, num_parallel_calls=tf.data.AUTOTUNE)
+#aqui criamos batches de 32 imagens, como explicado acima. o prefetch faz com 
 train_ds = train_ds.shuffle(1000).batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
 val_ds = ds_val.map(preprocess, num_parallel_calls=tf.data.AUTOTUNE)
 val_ds = val_ds.batch(BATCH_SIZE).prefetch(tf.data.AUTOTUNE)
