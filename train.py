@@ -1,4 +1,5 @@
 from tensorflow import keras
+import tensorflow as tf
 import json
 from pathlib import Path
 from data_processing import build_datasets, IMG_SIZE, BATCH_SIZE
