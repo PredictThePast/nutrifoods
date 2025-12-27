@@ -1,4 +1,3 @@
-"# nutrifoods" 
 Este e o data model nutrifoods. O objetivo e recener um imagem de comida em classificar qual é, treinado com o dataset food101. WIP
 
 O modelo que vamos usar e o EfficentNetB0. Decidi usar o B0 porque o servidor tem graficos integrados e nao tem GPU dedicada. 
