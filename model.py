@@ -41,7 +41,6 @@ def build_model(num_classes: int, img_size: int = 224):
     # Junta tudo num modelo Keras e devolve:
     # model: rede completa (backbone + head).
     # base_model: referência ao backbone para controlar trainable na fase de fine-tuning.
-
     model = models.Model(inputs, outputs)
     return model, base_model
 
