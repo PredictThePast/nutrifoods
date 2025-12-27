@@ -1,7 +1,5 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
-from tensorflow.keras.applications import EfficientNetB0
-from tensorflow.keras import layers, models
 import json, os
 
 #Explicacao do modelo e da tarefa em doc.txt
