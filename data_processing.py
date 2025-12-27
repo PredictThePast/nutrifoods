@@ -7,11 +7,6 @@ import json, os
 IMG_SIZE = 224
 #recebe 32 imagens de cada vez ao treinar antes de alterar peso(nao sei bem explicar mas a cada 32 imagens ele aplica o que aprendeu)
 BATCH_SIZE = 32
-# epochs e a quantidade de vezes o modelo recebe o dataset de treino. neste caso 5
-#primeira faze de treino. Só a "cabeça" nova que vamos criar mais a frente, com o backbone congelado.
-EPOCHS_HEAD = 5
-#treinamos o backbone que veio do modelo + a cabeça nova, so para o afinar para a nova tarefa
-EPOCHS_FINE = 10
 
 #carregar dataset e guardar dados de treino e de validaçao. o dataset ja tem esses splits disponiveis. train para treino, validation para validar no final/testes.
 def load_data():

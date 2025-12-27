@@ -25,7 +25,6 @@ def build_model(num_classes: int, img_size: int = 224):
     # Ou seja, o backbone devolve um tensor de "features", reduzindo a altura e a largura e aumentando o número de canais/features.
     # Por exemplo, algo como (7, 7, 1280): 7x7 de "mapa" para cada um dos 1280 canais.
     # Cada um desses canais é um "detetor" diferente de padrões (bordas, texturas, formas específicas, etc.).
-
     x = base_model(inputs, training=False)
 
     # O GlobalAveragePooling2D pega em cada canal (cada um dos 1280 mapas 7×7) e faz a média de todos os píxeis desse mapa.
