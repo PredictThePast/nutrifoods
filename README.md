@@ -48,3 +48,7 @@ O treino é feito em duas fases:
 2. Fazer _fine‑tuning_ de algumas camadas finais do _backbone_, para especializar melhor o modelo em comida.
 
 Assim, reutilizam‑se as capacidades de análise de imagens já existentes no _EfficientNet‑B0_, reduzindo o custo de treino e melhorando a performance com menos dados.
+
+##Avisos
+
+Se estiver em Windows, é recomendado treinar o modelo usando WSL, pois o TensorFlow 2.11+ não tem suporte nativo para GPUs em Windows.
