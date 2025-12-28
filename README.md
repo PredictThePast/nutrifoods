@@ -53,4 +53,4 @@ Assim, reutilizam‑se as capacidades de análise de imagens já existentes no _
 
 ## Avisos
 
-Se estiver em Windows, é recomendado treinar o modelo usando WSL, pois o TensorFlow 2.11+ não tem suporte nativo para GPUs em Windows.
+Se estiver em Windows, é recomendado treinar o modelo usando WSL, pois o TensorFlow 2.11+ não tem suporte nativo para GPUs em Windows. Se for o caso, recoomendo utilizar _pip install "tensorflow[and_cuda]"_
