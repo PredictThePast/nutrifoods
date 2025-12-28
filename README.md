@@ -49,6 +49,8 @@ O treino é feito em duas fases:
 
 Assim, reutilizam‑se as capacidades de análise de imagens já existentes no _EfficientNet‑B0_, reduzindo o custo de treino e melhorando a performance com menos dados.
 
-##Avisos
+---
+
+## Avisos
 
 Se estiver em Windows, é recomendado treinar o modelo usando WSL, pois o TensorFlow 2.11+ não tem suporte nativo para GPUs em Windows.
