@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 #primeira faze de treino. Só a "cabeça" nova que vamos criar mais a frente, com o backbone congelado.
 EPOCHS_HEAD = 5
 #treinamos o backbone que veio do modelo + a cabeça nova, so para o afinar para a nova tarefa
-EPOCHS_FINE = 10
+EPOCHS_FINE = 7
 
 #importar os dados
 train_ds, val_ds, num_classes, label_names = build_datasets()
@@ -57,11 +57,25 @@ model.compile(
     metrics=["accuracy"],
 )
 
-#aqui treinamos a cabeca com o backbone :) 10 epochs. guardamos numa var para depois podermos ver os dados de treino em graficos mais abaixo
+
+early_stop = keras.callbacks.EarlyStopping(
+    monitor="val_loss",
+    patience=2,
+    restore_best_weights=True,
+)
+
+checkpoint = keras.callbacks.ModelCheckpoint(
+    "artifacts/best_model.keras",
+    monitor="val_loss",
+    save_best_only=True,
+)
+
+#aqui treinamos a cabeca com o backbone :) com early stopping. guardamos numa var para depois podermos ver os dados de treino em graficos mais abaixo
 history_fine = model.fit(
     train_ds,
     epochs=EPOCHS_FINE,
     validation_data=val_ds,
+    callbacks=[early_stop, checkpoint],
 )
 
 
@@ -81,6 +95,17 @@ with open("artifacts/training_summary.json", "w") as f:
 
 print(f"Accuracy final na validação: {final_acc_pct:.2f}%")
 
+history_data = {
+    "loss": history_fine.history["loss"],
+    "val_loss": history_fine.history["val_loss"],
+    "accuracy": history_fine.history["accuracy"],
+    "val_accuracy": history_fine.history["val_accuracy"],
+}
+with open("artifacts/history_fine.json", "w") as f:
+    json.dump(history_data, f, indent=2)
+
+
+model.save("artifacts/final_model.keras")
 
 
 #Graficos com 

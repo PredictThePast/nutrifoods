@@ -9,3 +9,5 @@ uploads/
 node_modules/
 .env
 artifacts/
+test.py
+venv-wsl/
